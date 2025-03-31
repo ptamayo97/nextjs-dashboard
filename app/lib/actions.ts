@@ -7,13 +7,17 @@ import postgres from "postgres";
 const sql = postgres(process.env.POSTGRES_URL!, { ssl: "require" });
 
 const FormSchema = z.object({
+  // Zod already throws an error if the customer field is empty as it expects a type string.
   id: z.string(),
   customerId: z.string({
     invalid_type_error: "Please select a customer",
   }),
+  //Since you are coercing the amount type from string to number, it'll default to zero if the string is empty.
+  // tell Zod we always want the amount greater than 0 with the .gt() function.
   amount: z.coerce
     .number()
     .gt(0, { message: "Please enter an amount greater than $0." }),
+  // Zod already throws an error if the status field is empty as it expects "pending" or "paid".
   status: z.enum(["pending", "paid"], {
     invalid_type_error: "Please select an invoice status.",
   }),
@@ -32,6 +36,8 @@ export type State = {
 };
 
 export async function createInvoice(prevState: State, formData: FormData) {
+  // safeParse() will return an object containing either a success or error field.
+  // This will help handle validation more gracefully without having put this logic inside the try/catch block.
   const validatedFields = CreateInvoice.safeParse({
     customerId: formData.get("customerId"),
     amount: formData.get("amount"),
