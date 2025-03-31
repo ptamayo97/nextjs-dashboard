@@ -11,6 +11,8 @@ export default function LoginPage() {
             <AcmeLogo />
           </div>
         </div>
+        {/* This component is wrapped with React <Suspense> because it will 
+        access information from the incoming request (URL search params). */}
         <Suspense>
           <LoginForm />
         </Suspense>
