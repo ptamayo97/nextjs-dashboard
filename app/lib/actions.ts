@@ -14,7 +14,7 @@ const FormSchema = z.object({
   customerId: z.string({
     invalid_type_error: "Please select a customer",
   }),
-  //Since you are coercing the amount type from string to number, it'll default to zero if the string is empty.
+  // Since you are coercing the amount type from string to number, it'll default to zero if the string is empty.
   // tell Zod we always want the amount greater than 0 with the .gt() function.
   amount: z.coerce
     .number()
@@ -27,6 +27,8 @@ const FormSchema = z.object({
 });
 
 const CreateInvoice = FormSchema.omit({ id: true, date: true });
+// Use Zod to update the expected types
+const UpdateInvoice = FormSchema.omit({ id: true, date: true });
 
 export type State = {
   errors?: {
@@ -74,11 +76,6 @@ export async function createInvoice(prevState: State, formData: FormData) {
 
   //   console.log(typeof rawFormData.amount);
 }
-
-// Use Zod to update the expected types
-const UpdateInvoice = FormSchema.omit({ id: true, date: true });
-
-// ...
 
 export async function updateInvoice(
   id: string,
